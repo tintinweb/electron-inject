@@ -1,8 +1,11 @@
-# electron-inject
+# 💉 electron-inject
 
 You find yourself locked out of closed source electron applications with no easy way to enable developer tools? *electron-inject* to the rescue 👲
 
 *electron-inject* is an application wrapper that utilizes the remote debug console to inject javascript code into electron based applications. For example, this can be pretty handy to enable otherwise unavailable features like the built-in developer tools.
+
+![slack](https://cloud.githubusercontent.com/assets/2865694/24376228/70b2c2b0-133b-11e7-893c-c7a0ad262343.gif)
+
 
 # install
 
@@ -43,6 +46,11 @@ Inject hotkeys *F12:toggle devconsole* and *F5:reload* into closed source apps w
 
 `$ python -m electron_inject -d -t 60 - \\PATH\TO\Local\WhatsApp\app-0.2.2244\WhatsApp.exe`
 
+![whatsapp gif](https://cloud.githubusercontent.com/assets/2865694/24376256/81d44e88-133b-11e7-961f-060e7b8201ed.gif)
+
 ## slack
 
 `$ python -m electron_inject -d -t 60 - \\PATH\TO\Local\slack\app-2.5.2\slack.exe`
+
+![slack](https://cloud.githubusercontent.com/assets/2865694/24376228/70b2c2b0-133b-11e7-893c-c7a0ad262343.gif)
+
