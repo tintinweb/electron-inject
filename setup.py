@@ -5,11 +5,13 @@ import os
 from setuptools import setup
 
 def read(fname):
-    return open(os.path.join(os.path.dirname(__file__), fname)).read()
-
+    try:
+        return open(os.path.join(os.path.dirname(__file__), fname)).read()
+    except Exception:
+        return "Not available"
 setup(
     name="electron-inject",
-    version="0.1",
+    version="0.2",
     packages=["electron_inject"],
     author="tintinweb",
     author_email="tintinweb@oststrom.com",
@@ -18,7 +20,7 @@ setup(
     license="GPLv3",
     keywords=["electron", "inject", "devtools", "developer tools"],
     url="https://github.com/tintinweb/electron-inject/",
-    download_url="https://github.com/tintinweb/electron-inject/tarball/v0.1",
+    download_url="https://github.com/tintinweb/electron-inject/tarball/v0.2",
     #python setup.py register -r https://testpypi.python.org/pypi
     long_description=read("README.rst") if os.path.isfile("README.rst") else read("README.md"),
     install_requires=['websocket','requests'],
