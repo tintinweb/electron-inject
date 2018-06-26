@@ -32,6 +32,7 @@ or
       -d, --enable-devtools-hotkeys
                             Enable Hotkeys F12 (Toggle Developer Tools) and F5
                             (Refresh) [default: False]
+      -b, --browser         Launch Devtools in default browser. [default: False]
       -t TIMEOUT, --timeout=TIMEOUT
                             Try hard to inject for the time specified [default:
                             none]

@@ -105,7 +105,7 @@ class ElectronRemoteDebugger(object):
         sock.close()
 
         cmd = "%s %s" % (path, "--remote-debugging-port=%d" % port)
-        print cmd
+        print (cmd)
         p = subprocess.Popen(cmd, shell=True)
         if not p>0:
             raise Exception("Could not execute cmd: %r"%cmd)
@@ -122,4 +122,4 @@ class ElectronRemoteDebugger(object):
 if __name__ == "__main__":
     erb = ElectronRemoteDebugger("localhost", 8888)
     for w in erb.windows():
-        print erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH)
+        print (erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH))
