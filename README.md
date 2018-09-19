@@ -24,7 +24,7 @@ or
                electron_inject [options] - <electron application>
 
         example:
-               electron_inject --enable-dev-tool-hotkey - /path/to/electron/powered/application [--app-params app-args]
+               electron_inject --enable-devtools-hotkeys - /path/to/electron/powered/application [--app-params app-args]
 
 
     Options:
