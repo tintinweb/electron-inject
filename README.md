@@ -50,6 +50,10 @@ Inject hotkeys *F12:toggle devconsole* and *F5:reload* into closed source apps w
 
 ![whatsapp gif](https://cloud.githubusercontent.com/assets/2865694/24376256/81d44e88-133b-11e7-961f-060e7b8201ed.gif)
 
+If this gives you an error try launching it with the alternative browser method:
+
+`$ python -m electron_inject --browser - \PATH\TO\Local\WhatsApp\app-0.2.2244\WhatsApp.exe`
+
 ## slack
 
 `$ python -m electron_inject -d -t 60 - \\PATH\TO\Local\slack\app-2.5.2\slack.exe`
