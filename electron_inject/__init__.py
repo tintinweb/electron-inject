@@ -64,10 +64,10 @@ class ElectronRemoteDebugger(object):
 
     def requests_get(self, url, tries=5, delay=1):
         last_exception = None
-        for _ in xrange(tries):
+        for _ in range(tries):
             try:
                 return requests.get(url)
-            except requests.exceptions.ConnectionError, ce:
+            except requests.exceptions.ConnectionError as ce:
                 # ignore it
                 last_exception = ce
             time.sleep(delay)
@@ -107,11 +107,12 @@ class ElectronRemoteDebugger(object):
         cmd = "%s %s" % (path, "--remote-debugging-port=%d" % port)
         print (cmd)
         p = subprocess.Popen(cmd, shell=True)
-        if not p>0:
+        time.sleep(0.5)
+        if p.poll() is not None:
             raise Exception("Could not execute cmd: %r"%cmd)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        for _ in xrange(30):
+        for _ in range(30):
             result = sock.connect_ex(('localhost', port))
             if result > 0:
                 break
