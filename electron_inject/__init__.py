@@ -63,7 +63,7 @@ class ElectronRemoteDebugger(object):
         return ret
 
     def requests_get(self, url, tries=5, delay=1):
-        last_exception = None
+        last_exception = Exception("failed to request after %d tries."%tries)
         for _ in range(tries):
             try:
                 return requests.get(url)
@@ -71,7 +71,7 @@ class ElectronRemoteDebugger(object):
                 # ignore it
                 last_exception = ce
             time.sleep(delay)
-        raise ce
+        raise last_exception
 
 
     def sendrcv(self, w, msg):
