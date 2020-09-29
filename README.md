@@ -36,6 +36,9 @@ or
       -t TIMEOUT, --timeout=TIMEOUT
                             Try hard to inject for the time specified [default:
                             none]
+      -r RENDER_SCRIPTS, --render-script=RENDER_SCRIPTS
+                            Add a script to be injected into each window (render
+                            thread)
 
 # Showcase
 
