@@ -93,7 +93,7 @@ class ElectronRemoteDebugger(object):
         ret = json.loads(w['ws'].sendrcv(json.dumps(data)))
         if "result" not in ret:
             return ret
-        if ret['result']['wasThrown']:
+        if ret['result'].get('wasThrown'):
             raise Exception(ret['result']['result'])
         return ret['result']
 
