@@ -11,7 +11,7 @@ def read(fname):
         return "Not available"
 setup(
     name="electron-inject",
-    version="0.5",
+    version="0.6",
     packages=["electron_inject"],
     author="tintinweb",
     author_email="tintinweb@oststrom.com",
@@ -20,7 +20,7 @@ setup(
     license="GPLv3",
     keywords=["electron", "inject", "devtools", "developer tools"],
     url="https://github.com/tintinweb/electron-inject/",
-    download_url="https://github.com/tintinweb/electron-inject/tarball/v0.5",
+    download_url="https://github.com/tintinweb/electron-inject/tarball/v0.6",
     #python setup.py register -r https://testpypi.python.org/pypi
     long_description=read("README.md"),
     long_description_content_type='text/markdown',
