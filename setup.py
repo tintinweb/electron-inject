@@ -24,7 +24,7 @@ setup(
     #python setup.py register -r https://testpypi.python.org/pypi
     long_description=read("README.md"),
     long_description_content_type='text/markdown',
-    install_requires=['websocket','requests'],
+    install_requires=['websocket-client','requests'],
     package_data = {
                     'electron_inject': ['electron_inject'],
                     },
