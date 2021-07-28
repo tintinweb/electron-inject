@@ -63,3 +63,15 @@ If this gives you an error try launching it with the alternative browser method:
 
 ![slack](https://cloud.githubusercontent.com/assets/2865694/24376228/70b2c2b0-133b-11e7-893c-c7a0ad262343.gif)
 
+# Render Scripts
+
+Passing the -r file parameter allows to pass a list of scripts to be injected into the render thread. It does not follow imports, just evaluate the text
+
+`python -m electron_inject -r ./test.js -r ~/test2.js -r /usr/bin/test3.js - /opt/electron-api-demos/Electron\ API\ Demos`
+
+# Acknowledgments
+
+- [NathanPB](https://github.com/NathanPB) - #7
+
+
+
