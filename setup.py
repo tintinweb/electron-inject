@@ -20,11 +20,11 @@ setup(
     license="GPLv3",
     keywords=["electron", "inject", "devtools", "developer tools"],
     url="https://github.com/tintinweb/electron-inject/",
-    download_url="https://github.com/tintinweb/electron-inject/tarball/v0.5",
+    download_url="https://github.com/tintinweb/electron-inject/tarball/v0.6",
     #python setup.py register -r https://testpypi.python.org/pypi
     long_description=read("README.md"),
     long_description_content_type='text/markdown',
-    install_requires=['websocket','requests'],
+    install_requires=['websocket-client','requests'],
     package_data = {
                     'electron_inject': ['electron_inject'],
                     },
