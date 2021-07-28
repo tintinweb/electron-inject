@@ -44,6 +44,7 @@ def main():
     parser.add_option('-r', "--render-script",
                       action="append",
                       dest="render_scripts",
+                      default=[],
                       type="string",
                       help="Add a script to be injected into each window (render thread)")
 
@@ -78,24 +79,24 @@ def main():
     # erb = ElectronRemoteDebugger("localhost", 8888)
     windows_visited = set()
     while True:
-        for w in (_ for _ in erb.windows() if _['id'] not in windows_visited):
+        for w in (_ for _ in erb.windows() if _.get('id') not in windows_visited):
             try:
                 if options.enable_devtools_hotkeys:
-                    logger.info("injecting hotkeys script into %s" % w['id'])
+                    logger.info("injecting hotkeys script into %s" % w.get('id'))
                     logger.debug(erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH))
 
                 for script in options.render_scripts:
                     file = open(script)
                     content = file.read()
                     file.close()
-                    logger.info("injecting %s into %s" % (script, w['id']))
+                    logger.info("injecting %s into %s" % (script, w.get('id')))
                     logger.debug(erb.eval(w, content))
 
             except Exception as e:
                 logger.exception(e)
             finally:
                 # patch windows only once
-                windows_visited.add(w['id'])
+                windows_visited.add(w.get('id'))
 
         if time.time() > options.timeout:
             break
