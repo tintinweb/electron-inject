@@ -102,11 +102,12 @@ class ElectronRemoteDebugger(object):
         return ret['result']
 
     @classmethod
-    def execute(cls, path):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(('', 0))
-        port = sock.getsockname()[1]
-        sock.close()
+    def execute(cls, path, port=None):
+        if port is None:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.bind(('', 0))
+            port = sock.getsockname()[1]
+            sock.close()
 
         cmd = "%s %s" % (path, "--remote-debugging-port=%d" % port)
         print (cmd)
@@ -137,7 +138,7 @@ def launch_url(url):
             logger.info ('Please open a browser on: ' + url)
 
 
-def inject(target, devtools=False, browser=False, timeout=None, scripts=None):
+def inject(target, devtools=False, browser=False, timeout=None, scripts=None, port=None):
     timeout = time.time() + int(timeout) if timeout else 5
     scripts = dict.fromkeys(scripts or [])
 
@@ -146,7 +147,7 @@ def inject(target, devtools=False, browser=False, timeout=None, scripts=None):
             scripts[name] = file.read()
 
     #
-    erb = ElectronRemoteDebugger.execute(target)
+    erb = ElectronRemoteDebugger.execute(target, port)
     # launch browser?
     if browser:
         launch_url("http://%(host)s:%(port)s/" % erb.params)
