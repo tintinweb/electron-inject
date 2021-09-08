@@ -171,7 +171,7 @@ def inject(target, devtools=False, browser=False, timeout=None, scripts=None, po
                 # patch windows only once
                 windows_visited.add(w.get('id'))
 
-        if time.time() > timeout:
+        if time.time() > timeout or all(w.get('id') in windows_visited for w in erb.windows()):
             break
         logger.debug("timeout not hit.")
         time.sleep(1)
