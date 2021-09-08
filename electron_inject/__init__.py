@@ -137,8 +137,13 @@ def launch_url(url):
             logger.info ('Please open a browser on: ' + url)
 
 
-def inject(target, devtools=False, browser=False, timeout=None, scripts=[]):
+def inject(target, devtools=False, browser=False, timeout=None, scripts=None):
     timeout = time.time() + int(timeout) if timeout else 5
+    scripts = dict.fromkeys(scripts or [])
+
+    for name in scripts:
+        with open(name, "r") as file:
+            scripts[name] = file.read()
 
     #
     erb = ElectronRemoteDebugger.execute(target)
@@ -155,11 +160,8 @@ def inject(target, devtools=False, browser=False, timeout=None, scripts=[]):
                     logger.info("injecting hotkeys script into %s" % w.get('id'))
                     logger.debug(erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH))
 
-                for script in scripts:
-                    file = open(script)
-                    content = file.read()
-                    file.close()
-                    logger.info("injecting %s into %s" % (script, w.get('id')))
+                for name, content in scripts.items():
+                    logger.info("injecting %s into %s" % (name, w.get('id')))
                     logger.debug(erb.eval(w, content))
 
             except Exception as e:
