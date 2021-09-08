@@ -88,7 +88,7 @@ class ElectronRemoteDebugger(object):
                 'params': {'contextId': 1,
                            'doNotPauseOnExceptionsAndMuteConsole': False,
                            'expression': expression,
-                           'gneratePreview': False,
+                           'generatePreview': False,
                            'includeCommandLineAPI': True,
                            'objectGroup': 'console',
                            'returnByValue': False,
