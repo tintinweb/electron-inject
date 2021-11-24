@@ -11,7 +11,7 @@ def read(fname):
         return "Not available"
 setup(
     name="electron-inject",
-    version="0.6",
+    version="0.7",
     packages=["electron_inject"],
     author="tintinweb",
     author_email="tintinweb@oststrom.com",

@@ -114,7 +114,7 @@ class ElectronRemoteDebugger(object):
         p = subprocess.Popen(cmd, shell=True)
         time.sleep(0.5)
         if p.poll() is not None:
-            raise Exception("Could not execute cmd: %r"%cmd)
+            raise Exception("Could not execute cmd (not found or already running?): %r"%cmd)
 
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         for _ in range(30):
@@ -146,13 +146,8 @@ def inject(target, devtools=False, browser=False, timeout=None, scripts=None, po
         with open(name, "r") as file:
             scripts[name] = file.read()
 
-    #
     erb = ElectronRemoteDebugger.execute(target, port)
-    # launch browser?
-    if browser:
-        launch_url("http://%(host)s:%(port)s/" % erb.params)
 
-    # erb = ElectronRemoteDebugger("localhost", 8888)
     windows_visited = set()
     while True:
         for w in (_ for _ in erb.windows() if _.get('id') not in windows_visited):
@@ -175,6 +170,10 @@ def inject(target, devtools=False, browser=False, timeout=None, scripts=None, po
             break
         logger.debug("timeout not hit.")
         time.sleep(1)
+
+        # launch browser?
+    if browser:
+        launch_url("http://%(host)s:%(port)s/" % erb.params)
 
 
 if __name__ == "__main__":

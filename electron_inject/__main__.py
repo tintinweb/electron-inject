@@ -28,7 +28,10 @@ if __name__ == '__main__':
                       help="Enable Hotkeys F12 (Toggle Developer Tools) and F5 (Refresh) [default: %default]")
     parser.add_option("-b", "--browser",
                       action="store_true", dest="browser", default=False,
-                      help="Launch Devtools in default browser. [default: %default]")
+                      help="Launch Devtools in default browser. [default: %default]") 
+    parser.add_option("-s", "--silent",
+                      action="store_true", dest="silent", default=False,
+                      help="Stay silent. Do not ask any questions. [default: %default]")
     parser.add_option("-t", "--timeout",
                       default=None,
                       help="Try hard to inject for the time specified [default: %default]")
@@ -59,6 +62,11 @@ if __name__ == '__main__':
         logger.error("mandatory argument <application> missing! see usage.")
         sys.exit(1)
 
+    if not options.silent and not options.browser and not len(options.render_scripts): # if non-silent standard execution
+        # ask user if they want to open devtools in browser
+        if(input("Do you want to open the Developer Console in your Browser? [y/N]").strip().lower().startswith("y")):
+            options.browser = True
+        
     inject(
         target,
         devtools=options.enable_devtools_hotkeys,
