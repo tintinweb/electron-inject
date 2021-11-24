@@ -8,7 +8,11 @@ import websocket
 import json
 import socket
 import subprocess
-import time
+import os
+import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH = """document.addEventListener("keydown", function (e) {
     if (e.which === 123) {
@@ -84,7 +88,7 @@ class ElectronRemoteDebugger(object):
                 'params': {'contextId': 1,
                            'doNotPauseOnExceptionsAndMuteConsole': False,
                            'expression': expression,
-                           'gneratePreview': False,
+                           'generatePreview': False,
                            'includeCommandLineAPI': True,
                            'objectGroup': 'console',
                            'returnByValue': False,
@@ -98,15 +102,16 @@ class ElectronRemoteDebugger(object):
         return ret['result']
 
     @classmethod
-    def execute(cls, path):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.bind(('', 0))
-        port = sock.getsockname()[1]
-        sock.close()
+    def execute(cls, path, port=None):
+        if port is None:
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.bind(('', 0))
+            port = sock.getsockname()[1]
+            sock.close()
 
         cmd = "%s %s" % (path, "--remote-debugging-port=%d" % port)
         print (cmd)
-        p = subprocess.Popen(cmd, shell=True)
+        p = subprocess.Popen(cmd)
         time.sleep(0.5)
         if p.poll() is not None:
             raise Exception("Could not execute cmd: %r"%cmd)
@@ -118,6 +123,58 @@ class ElectronRemoteDebugger(object):
                 break
             time.sleep(1)
         return cls("localhost", port=port)
+
+
+def launch_url(url):
+    #https://stackoverflow.com/questions/4216985/call-to-operating-system-to-open-url
+    if sys.platform == 'win32':
+        os.startfile(url)
+    elif sys.platform == 'darwin':
+        subprocess.Popen(['open', url])
+    else:
+        try:
+            subprocess.Popen(['xdg-open', url])
+        except OSError:
+            logger.info ('Please open a browser on: ' + url)
+
+
+def inject(target, devtools=False, browser=False, timeout=None, scripts=None, port=None):
+    timeout = time.time() + int(timeout) if timeout else 5
+    scripts = dict.fromkeys(scripts or [])
+
+    for name in scripts:
+        with open(name, "r") as file:
+            scripts[name] = file.read()
+
+    #
+    erb = ElectronRemoteDebugger.execute(target, port)
+    # launch browser?
+    if browser:
+        launch_url("http://%(host)s:%(port)s/" % erb.params)
+
+    # erb = ElectronRemoteDebugger("localhost", 8888)
+    windows_visited = set()
+    while True:
+        for w in (_ for _ in erb.windows() if _.get('id') not in windows_visited):
+            try:
+                if devtools:
+                    logger.info("injecting hotkeys script into %s" % w.get('id'))
+                    logger.debug(erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH))
+
+                for name, content in scripts.items():
+                    logger.info("injecting %s into %s" % (name, w.get('id')))
+                    logger.debug(erb.eval(w, content))
+
+            except Exception as e:
+                logger.exception(e)
+            finally:
+                # patch windows only once
+                windows_visited.add(w.get('id'))
+
+        if time.time() > timeout or all(w.get('id') in windows_visited for w in erb.windows()):
+            break
+        logger.debug("timeout not hit.")
+        time.sleep(1)
 
 
 if __name__ == "__main__":

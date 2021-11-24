@@ -2,28 +2,19 @@
 # -*- coding: utf-8 -*-
 # @author: github.com/tintinweb
 
-import os, subprocess
 import sys
-import time
 from optparse import OptionParser
-from electron_inject import ElectronRemoteDebugger, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH
+from electron_inject import inject
 import logging
 
 logger = logging.getLogger(__name__)
 
-def launch_url(url):
-    #https://stackoverflow.com/questions/4216985/call-to-operating-system-to-open-url
-    if sys.platform == 'win32':
-        os.startfile(url)
-    elif sys.platform == 'darwin':
-        subprocess.Popen(['open', url])
-    else:
-        try:
-            subprocess.Popen(['xdg-open', url])
-        except OSError:
-            logger.info ('Please open a browser on: ' + url)
 
-def main():
+if __name__ == '__main__':
+    logging.basicConfig(format='[%(filename)s - %(funcName)20s() ][%(levelname)8s] %(message)s',
+                        level=logging.INFO)
+    logger.setLevel(logging.DEBUG)
+
     usage = """
     usage:
            electron_inject [options] - <electron application>
@@ -68,44 +59,10 @@ def main():
         logger.error("mandatory argument <application> missing! see usage.")
         sys.exit(1)
 
-    options.timeout = time.time() + int(options.timeout) if options.timeout else 5
-
-    #
-    erb = ElectronRemoteDebugger.execute(target)
-    # launch browser?
-    if options.browser:
-        launch_url("http://%(host)s:%(port)s/" % erb.params)
-
-    # erb = ElectronRemoteDebugger("localhost", 8888)
-    windows_visited = set()
-    while True:
-        for w in (_ for _ in erb.windows() if _.get('id') not in windows_visited):
-            try:
-                if options.enable_devtools_hotkeys:
-                    logger.info("injecting hotkeys script into %s" % w.get('id'))
-                    logger.debug(erb.eval(w, SCRIPT_HOTKEYS_F12_DEVTOOLS_F5_REFRESH))
-
-                for script in options.render_scripts:
-                    file = open(script)
-                    content = file.read()
-                    file.close()
-                    logger.info("injecting %s into %s" % (script, w.get('id')))
-                    logger.debug(erb.eval(w, content))
-
-            except Exception as e:
-                logger.exception(e)
-            finally:
-                # patch windows only once
-                windows_visited.add(w.get('id'))
-
-        if time.time() > options.timeout:
-            break
-        logger.debug("timeout not hit.")
-        time.sleep(1)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(format='[%(filename)s - %(funcName)20s() ][%(levelname)8s] %(message)s',
-                        level=logging.INFO)
-    logger.setLevel(logging.DEBUG)
-    main()
+    inject(
+        target,
+        devtools=options.enable_devtools_hotkeys,
+        browser=options.browser,
+        timeout=options.timeout,
+        scripts=options.render_scripts,
+    )
